@@ -1,2 +1,1 @@
-# utility-files
-A repo of all my personal config files and utility scripts
+#!!THIS SHOULD BE CONVERTED TO ORG MODE DOCUMENT!!
