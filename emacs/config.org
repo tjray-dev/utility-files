@@ -1,0 +1,128 @@
+#+Title: GNU Emacs Config
+#+Author: Tate Ray
+#+DESCRIPTION: Basic GNU Emacs Config
+#+STARTUP: showeverything
+#+OPTIONS: toc:3
+
+* PACKAGES
+
+** Straight
+
+#+begin_src emacs-lisp
+    (defvar bootstrap-version)
+    (let ((bootstrap-file
+		  (expand-file-name
+			   "straight/repos/straight.el/bootstrap.el"
+				   (or (bound-and-true-p straight-base-dir)
+						   user-emacs-directory)))
+	(bootstrap-version 7))
+	(unless (file-exists-p bootstrap-file)
+	      (with-current-buffer
+			  (url-retrieve-synchronously
+				    "https://radian-software.github.io/straight.el/install.el"
+					     'silent 'inhibit-cookies)
+		      (goto-char (point-max))
+			    (eval-print-last-sexp)))
+	  (load bootstrap-file nil 'nomessage))
+#+end_src
+
+** Use Package
+#+begin_src emacs-lisp
+  (straight-use-package 'use-package)
+#+end_src
+
+** Magit
+#+begin_src emacs-lisp
+  (use-package magit
+   :straight t)
+  (setq magit-view-git-manual-method 'man)
+#+end_src
+
+** Company
+#+begin_src emacs-lisp
+  (use-package company
+   :straight t
+   :after lsp-mode
+   :hook (prog-mode . company-mode))
+  
+  (setq company-idle-delay 0
+      company-tooltip-idle-delay .2
+      company-require-match nil
+      company-frontends
+      '(company-pseudo-tooltip-unless-just-one-frontend-with-delay
+        company-preview-frontend
+        company-echo-metadata-frontend)
+      company-backends '(company-capf))
+  (add-hook 'after-init-hook 'global-company-mode)
+#+end_src
+
+** Vertico
+#+begin_src emacs-lisp
+  (use-package vertico
+    :straight t
+    :init (vertico-mode))
+#+end_src
+
+** Marginalia
+#+begin_src emacs-lisp
+    (use-package marginalia
+      :straight t
+      :init (marginalia-mode))
+#+end_src
+
+** Consult
+#+begin_src emacs-lisp
+  (use-package consult
+    :straight t)
+#+end_src
+
+** YASnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :straight t)
+  (use-package yasnippet-snippets
+    :straight t)
+  (yas-global-mode t)
+#+end_src
+
+** Which Key
+#+begin_src emacs-lisp
+  (use-package which-key
+    :straight t
+    :init (which-key-mode)
+    :diminish which-key-mode
+    :config
+    (setq which-key-idle-delay 0))
+#+end_src
+
+
+* AESTHETICS
+
+** UI Tweak
+#+begin_src emacs-lisp
+  (global-display-line-numbers-mode t)
+  (column-number-mode)
+  (dolist (mode '(org-mode-hook
+		  term-mode-hook
+		  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  (menu-bar-mode -1)
+#+end_src
+
+** Themes
+
+#+begin_src emacs-lisp
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+  (load-theme 'cool-retro-term t)
+#+end_src
+
+
+#+begin_src emacs-lisp
+ (use-package jtsx
+  :straight t
+  :mode(("\\.jsx?\\'" . jtsx-jsx-mode)
+        ("\\.tsx?\\'" . jtsx-tsx-mode))
+  :commands jtsx-install-treesit-language
+  :hook ((jtsx-jsx-mode . hs-minor-mode)
+         (jtsx-tsx-mode . hs-minor-mode)))
+#+end_src
